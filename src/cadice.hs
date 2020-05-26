@@ -1,12 +1,3 @@
-#! /usr/bin/env stack
-{- stack
-    --resolver lts-8.11
-    --install-ghc
-    runghc
-    --package optparse-applicative
-    --package text
--}
-
 {-# LANGUAGE OverloadedStrings #-}
 
 import Options.Applicative
