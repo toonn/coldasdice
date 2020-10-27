@@ -1,12 +1,13 @@
-{ pkgs ? import ./nixpkgs.nix
-, haskellCompiler ? "ghc865"
+{ pkgs ? import ~/src/nix-config/haskell.nix/nixpkgs.nix
+, compiler-nix-name ? "ghc8102"
 }:
-pkgs.haskell-nix.cabalProject {
+pkgs.haskell-nix.project {
+  inherit compiler-nix-name;
+
   src = pkgs.haskell-nix.haskellLib.cleanSourceWith {
     name = "coldasdice-source";
     src = ./.;
     filter = path: type:
       (builtins.match "LICENSE|.*\.(cabal|hs)" (baseNameOf path)) != null;
   };
-  ghc = pkgs.buildPackages.pkgs.haskell-nix.compiler.${haskellCompiler};
 }

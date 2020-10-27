@@ -1,30 +1,6 @@
-{ pkgs ? import ./nixpkgs.nix
-, haskellCompiler ? "ghc865"
+{ pkgs ? import ~/src/nix-config/haskell.nix/nixpkgs.nix
+, compiler-nix-name ? "ghc8102"
+, shell ? import ~/src/nix-config/haskell.nix/shell.nix
 }:
-let
-  hsPkgs = import ./default.nix { inherit haskellCompiler pkgs; };
-  haskell-nix = pkgs.haskell-nix;
-  hackage-package = haskell-nix.hackage-package;
-in hsPkgs.shellFor {
-  packages = ps: with ps; [
-    bfpt
-  ];
-
-  buildInputs =
-    (with pkgs; # Packages that don't work from hsPkgs for some reason
-    [ cabal-install
-    ]
-
-    ) ++ (with haskell-nix.haskellPackages; # Packages in the overlay
-    [ ghcid.components.exes.ghcid
-    ]
-
-    ) ++ ( # Packages not in stackage-lts
-    [ (hackage-package { name = "fast-tags";
-                         version = "2.0.0"; }).components.exes.fast-tags
-    ]);
-
-  exactDeps = true;
-
-  withHoogle = true;
-}
+let hsPkgs = import ./default.nix { inherit pkgs compiler-nix-name; };
+in shell { inherit hsPkgs; for = with hsPkgs; [ coldasdice ]; }
